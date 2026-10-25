@@ -1,0 +1,17 @@
+# personal / runtime
+settings.json
+server.log
+backend.out
+*.aclink_part
+
+# AssettoServer is downloaded by tools/get_assettoserver.ps1, not stored in git
+vendor/
+
+# build output
+build/
+share/
+dist/
+*.exe
+*.spec
+__pycache__/
+*.pyc

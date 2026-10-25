@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AC Link</title>
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="bg"></div>
+<header>
+  <nav id="menu">
+    <a data-page="host" class="on">host</a>
+    <a data-page="join">join</a>
+    <a data-page="settings">settings</a>
+  </nav>
+  <div id="ts" class="ts" title="Tailscale"></div>
+</header>
+
+<main>
+  <!-- ======================================================== HOST -->
+  <section id="page-host" class="page on">
+    <div id="hosting" class="hosting hidden">
+      <div class="code-card">
+        <div class="label">Give this code to your friend</div>
+        <div class="code" id="h-code">----</div>
+        <div class="row">
+          <button id="h-copy">Copy code</button>
+          <button id="h-joinme" class="primary">Join my game</button>
+          <button id="h-stop" class="danger">Stop hosting</button>
+        </div>
+        <div class="state" id="h-state"></div>
+      </div>
+      <div class="facts" id="h-facts"></div>
+      <div class="warn hidden" id="h-warn"></div>
+    </div>
+    <div class="warn fw hidden" id="fw">Windows Firewall is blocking AssettoServer, so friends can't connect to your game.
+      <div class="row" style="margin-top:8px"><button id="fw-fix" class="primary">Fix firewall</button><span class="hint">Windows will ask for permission. This allows AssettoServer on private networks (Tailscale) only.</span></div></div>
+
+    <div id="setup" class="setup">
+      <div class="col tracks">
+        <h2>track</h2>
+        <input id="t-search" placeholder="Search tracks" spellcheck="false">
+        <div id="t-list" class="list"></div>
+      </div>
+      <div class="col details">
+        <div class="hero" id="t-hero"><img id="t-preview" alt=""><img id="t-outline" alt=""><div class="hero-name" id="t-name">Pick a track</div></div>
+        <div class="chips" id="t-layouts"></div>
+
+        <h3>CONDITIONS</h3>
+        <div class="field"><label>Time of day</label>
+          <input type="range" id="c-hour" min="0" max="23.75" step="0.25"><span class="val" id="c-hour-v"></span></div>
+        <div class="field"><label>Weather</label><select id="c-weather"></select></div>
+        <div class="field"><label>Traffic</label>
+          <label class="toggle"><input type="checkbox" id="c-traffic"><span></span></label>
+          <div class="seg" id="c-density"><a data-v="low">Light</a><a data-v="normal">Normal</a><a data-v="high">Heavy</a></div>
+          <span class="hint" id="c-traffic-hint"></span></div>
+
+        <h3>CARS <span class="sub">your friends pick one of these when they join</span></h3>
+        <div class="carchips" id="c-cars"></div>
+        <div class="field"><label>Players per car</label><input type="number" id="c-players" min="1" max="24"></div>
+
+        <div class="go"><span class="err" id="h-err"></span><button id="h-host" class="primary big">Host</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== JOIN -->
+  <section id="page-join" class="page">
+    <div class="join">
+      <h2>join a friend</h2>
+      <p class="muted">Type the code from the host's AC Link.</p>
+      <div class="codebox"><input id="j-code" maxlength="21" placeholder="XXXX-XXXX" spellcheck="false" autocomplete="off"><button id="j-find" class="primary">Find</button></div>
+      <div class="err" id="j-err"></div>
+      <div id="j-result" class="hidden">
+        <div class="server">
+          <img id="j-preview" alt="">
+          <div>
+            <div class="sname" id="j-name"></div>
+            <div class="muted" id="j-meta"></div>
+          </div>
+        </div>
+        <h3>CARS YOU CAN DRIVE</h3>
+        <div class="carchips" id="j-cars"></div>
+        <div class="warn hidden" id="j-missing"></div>
+        <div class="dl hidden" id="j-dl">
+          <h3>GET IT FROM THE HOST</h3>
+          <div id="j-items"></div>
+          <div class="bar hidden" id="j-bar"><i></i></div>
+          <div class="row"><button id="j-get" class="primary">Download</button><button id="j-cancel" class="hidden">Cancel</button><span class="muted" id="j-dlstate"></span></div>
+        </div>
+        <div class="go"><span class="muted">Content Manager opens the server: pick your car there and press Join.</span><button id="j-join" class="primary big">Join</button></div>
+      </div>
+      <div id="j-recent"></div>
+    </div>
+  </section>
+
+  <!-- ======================================================== SETTINGS -->
+  <section id="page-settings" class="page">
+    <nav class="tabs" id="tabs">
+      <a data-tab="general" class="on">GENERAL</a>
+      <a data-tab="rules">SERVER RULES</a>
+      <a data-tab="traffic">TRAFFIC</a>
+      <a data-tab="assetto">ASSETTOSERVER</a>
+      <a data-tab="plugins">PLUGINS</a>
+      <a data-tab="csp">CSP OPTIONS</a>
+      <a data-tab="files">FILES</a>
+      <a data-tab="log">LOG</a>
+    </nav>
+    <div class="tab on" id="tab-general"></div>
+    <div class="tab" id="tab-rules"></div>
+    <div class="tab" id="tab-traffic"></div>
+    <div class="tab" id="tab-assetto"></div>
+    <div class="tab" id="tab-plugins"></div>
+    <div class="tab" id="tab-csp"></div>
+    <div class="tab" id="tab-files"></div>
+    <div class="tab" id="tab-log"><div class="row"><button id="log-refresh">Refresh</button><button data-open="log">Open log file</button></div><pre id="log"></pre></div>
+  </section>
+</main>
+
+<div id="modal" class="modal hidden">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="m-title">cars</h2><input id="m-search" placeholder="Search cars" spellcheck="false">
+      <label class="chk"><input type="checkbox" id="m-traffic"> show traffic cars</label><button id="m-done" class="primary">Done</button></div>
+    <div id="m-list" class="grid"></div>
+  </div>
+</div>
+<div id="setup-modal" class="modal hidden">
+  <div class="dialog wide">
+    <h2>welcome to AC Link</h2>
+    <p>Here's what AC Link needs. It can download AssettoServer for you; the rest you install once from their own sites.</p>
+    <div id="setup-list"></div>
+    <div class="bar hidden" id="setup-bar"><i></i></div>
+    <div class="err" id="setup-err"></div>
+    <div class="row end"><button id="setup-recheck">Check again</button><button id="setup-done" class="primary">Continue</button></div>
+  </div>
+</div>
+<div id="confirm" class="modal hidden">
+  <div class="dialog">
+    <h2>stop hosting?</h2>
+    <p>Closing AC Link ends the server. Everyone in your game gets disconnected.</p>
+    <div class="row end"><button id="cf-keep">Keep hosting</button><button id="cf-close" class="danger primary">Stop server and close</button></div>
+  </div>
+</div>
+<div id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
